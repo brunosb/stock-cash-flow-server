@@ -21,6 +21,7 @@
     "noFallthroughCasesInSwitch": false,
     "paths": {
       "@modules/*":["./src/modules/*"],
+      "@helpers/*":["./src/helpers/*"],
       "@test/*":["./test/*"]
     }
   }
