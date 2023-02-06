@@ -13,9 +13,10 @@ describe('Delete company', () => {
       cnpj: '11569344000132',
     });
 
-    expect(async () => {
-      await deleteCompany.execute({ companyId: company.id });
-    }).toBeTruthy();
+    await deleteCompany.execute({ companyId: company.id });
+
+    const isExistsById = await companiesRepository.existsById(company.id);
+    expect(isExistsById).toBeFalsy();
   });
 
   it('should not be able delete a company that does not exist by id', async () => {
