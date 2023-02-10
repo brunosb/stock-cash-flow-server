@@ -30,6 +30,14 @@ export class InMemoryCustomersRepository implements CustomersRepository {
     );
   }
 
+  async existsByStoreName(customerStoreName: string): Promise<boolean> {
+    return this.customers.some(
+      (item) =>
+        item.storeName.trim().toLocaleLowerCase() ===
+          customerStoreName.trim().toLocaleLowerCase() && !item.deletedAt,
+    );
+  }
+
   async delete(customerId: string): Promise<void> {
     const customerIndex = this.customers.findIndex(
       (item) => item.id === customerId,

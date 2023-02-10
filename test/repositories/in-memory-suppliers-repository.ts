@@ -30,6 +30,14 @@ export class InMemorySuppliersRepository implements SuppliersRepository {
     );
   }
 
+  async existsByName(supplierName: string): Promise<boolean> {
+    return this.suppliers.some(
+      (item) =>
+        item.name.trim().toLocaleLowerCase() ===
+          supplierName.trim().toLocaleLowerCase() && !item.deletedAt,
+    );
+  }
+
   async delete(supplierId: string): Promise<void> {
     const supplierIndex = this.suppliers.findIndex(
       (item) => item.id === supplierId,

@@ -4,6 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { Address } from '../entities/address';
 import { Customer } from '../entities/customer';
 import { CustomersRepository } from '../repositories/customers-repository';
+import { CustomerAlreadyExists } from './errors/customer-already-exists';
 
 interface CreateAddressRequest {
   street: string;
@@ -48,12 +49,20 @@ export class CreateCustomer {
       throw new CompanyNotFound();
     }
 
+    const existsByStoreName = await this.customersRepository.existsByStoreName(
+      storeName,
+    );
+
+    if (existsByStoreName) {
+      throw new CustomerAlreadyExists();
+    }
+
     const customer = new Customer({
       storeName,
       contactName,
       phones,
       email,
-      address: new Address({ ...addressRaw }),
+      address: addressRaw ? new Address({ ...addressRaw }) : undefined,
       company,
     });
 
