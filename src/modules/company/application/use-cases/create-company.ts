@@ -25,9 +25,9 @@ export class CreateCompany {
     });
 
     if (cnpj) {
-      const isExistsByCNPJ = await this.companiesRepository.existsByCNPJ(cnpj);
+      const companyExists = await this.companiesRepository.findByCNPJ(cnpj);
 
-      if (!isExistsByCNPJ) {
+      if (!companyExists) {
         company.cnpj = new Cnpj(cnpj);
       } else {
         throw new CompanyAlreadyExists();

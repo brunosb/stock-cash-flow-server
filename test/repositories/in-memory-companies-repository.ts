@@ -30,9 +30,9 @@ export class InMemoryCompaniesRepository implements CompaniesRepository {
     );
   }
 
-  async existsByCNPJ(companyCNPJ: string): Promise<boolean> {
-    return this.companies.some(
-      (item) => item.cnpj?.value === companyCNPJ && !item.deletedAt,
+  async findByCNPJ(companyCNPJ: string): Promise<Company | undefined> {
+    return this.companies.find(
+      (item) => item.cnpj.value === companyCNPJ && !item.deletedAt,
     );
   }
 
