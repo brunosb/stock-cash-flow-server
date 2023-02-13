@@ -1,6 +1,7 @@
 import { InMemoryCompaniesRepository } from '@test/repositories/in-memory-companies-repository';
 import { CreateCompany } from '../create-company';
 import { CompanyAlreadyExists } from '../errors/company-already-exists';
+import { CompanyNotFound } from '../errors/company-not-found';
 import { UpdateCompany } from '../update-company';
 
 describe('Update company', () => {
@@ -90,6 +91,25 @@ describe('Update company', () => {
     }).toBeTruthy();
   });
 
+  it('should be able to update company when change cnpj and cnpj already exist by current company update', async () => {
+    const companiesRepository = new InMemoryCompaniesRepository();
+    const createCompany = new CreateCompany(companiesRepository);
+    const updateCompany = new UpdateCompany(companiesRepository);
+
+    const { company } = await createCompany.execute({
+      name: 'Teste 1',
+      cnpj: '11569344000132',
+    });
+
+    const { company: companyUpdated } = await updateCompany.execute({
+      id: company.id,
+      name: 'Teste 1 Updated',
+      cnpj: '11569344000132',
+    });
+
+    expect(companyUpdated).toBeTruthy();
+  });
+
   it('should not be able to update company with cnpj and exist another with same cnpj', async () => {
     const companiesRepository = new InMemoryCompaniesRepository();
     const createCompany = new CreateCompany(companiesRepository);
@@ -112,5 +132,17 @@ describe('Update company', () => {
         cnpj: '11569344000132',
       });
     }).rejects.toThrow(CompanyAlreadyExists);
+  });
+
+  it('should not be able update company with id non exist', async () => {
+    const companiesRepository = new InMemoryCompaniesRepository();
+    const updateCompany = new UpdateCompany(companiesRepository);
+
+    expect(async () => {
+      await updateCompany.execute({
+        id: '789-456-321',
+        name: 'Teste',
+      });
+    }).rejects.toThrow(CompanyNotFound);
   });
 });
