@@ -7,6 +7,7 @@ import { InMemoryCustomersRepository } from '@test/repositories/in-memory-custom
 import { InMemorySuppliersRepository } from '@test/repositories/in-memory-suppliers-repository';
 
 @Module({
+  imports: [],
   providers: [
     {
       provide: CustomersRepository,

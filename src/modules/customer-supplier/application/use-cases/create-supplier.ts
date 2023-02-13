@@ -3,6 +3,7 @@ import { CompanyNotFound } from '@modules/company/application/use-cases/errors/c
 import { Injectable } from '@nestjs/common';
 import { Address } from '../entities/address';
 import { Supplier } from '../entities/supplier';
+import { AddressesRepository } from '../repositories/addresses-repository';
 import { SuppliersRepository } from '../repositories/suppliers-repository';
 import { SupplierAlreadyExists } from './errors/supplier-already-exists';
 
@@ -34,6 +35,7 @@ export class CreateSupplier {
   constructor(
     private suppliersRepository: SuppliersRepository,
     private companiesRepository: CompaniesRepository,
+    private addressesRepository: AddressesRepository,
   ) {}
 
   async execute(
@@ -47,7 +49,7 @@ export class CreateSupplier {
       throw new CompanyNotFound();
     }
 
-    const existsByName = await this.suppliersRepository.existsByName(name);
+    const existsByName = await this.suppliersRepository.findByName(name);
 
     if (existsByName) {
       throw new SupplierAlreadyExists();
@@ -57,9 +59,16 @@ export class CreateSupplier {
       name,
       phones,
       email,
-      address: addressRaw ? new Address({ ...addressRaw }) : undefined,
       company,
     });
+
+    if (addressRaw) {
+      const address = new Address({ ...addressRaw });
+
+      await this.addressesRepository.create(address);
+
+      supplier.address = address;
+    }
 
     await this.suppliersRepository.create(supplier);
 

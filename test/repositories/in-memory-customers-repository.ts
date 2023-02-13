@@ -24,17 +24,19 @@ export class InMemoryCustomersRepository implements CustomersRepository {
     );
   }
 
-  async existsById(customerId: string): Promise<boolean> {
-    return this.customers.some(
-      (item) => item.id === customerId && !item.deletedAt,
-    );
-  }
-
-  async existsByStoreName(customerStoreName: string): Promise<boolean> {
-    return this.customers.some(
+  async findByStoreName(
+    customerStoreName: string,
+  ): Promise<Customer | undefined> {
+    return this.customers.find(
       (item) =>
         item.storeName.trim().toLocaleLowerCase() ===
           customerStoreName.trim().toLocaleLowerCase() && !item.deletedAt,
+    );
+  }
+
+  async existsById(customerId: string): Promise<boolean> {
+    return this.customers.some(
+      (item) => item.id === customerId && !item.deletedAt,
     );
   }
 

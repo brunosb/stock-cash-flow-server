@@ -24,17 +24,17 @@ export class InMemorySuppliersRepository implements SuppliersRepository {
     );
   }
 
-  async existsById(supplierId: string): Promise<boolean> {
-    return this.suppliers.some(
-      (item) => item.id === supplierId && !item.deletedAt,
-    );
-  }
-
-  async existsByName(supplierName: string): Promise<boolean> {
-    return this.suppliers.some(
+  async findByName(supplierName: string): Promise<Supplier | undefined> {
+    return this.suppliers.find(
       (item) =>
         item.name.trim().toLocaleLowerCase() ===
           supplierName.trim().toLocaleLowerCase() && !item.deletedAt,
+    );
+  }
+
+  async existsById(supplierId: string): Promise<boolean> {
+    return this.suppliers.some(
+      (item) => item.id === supplierId && !item.deletedAt,
     );
   }
 
