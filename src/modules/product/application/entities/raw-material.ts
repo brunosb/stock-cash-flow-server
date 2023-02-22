@@ -87,6 +87,7 @@ export class RawMaterial {
   }
   public set lastPrice(value: number) {
     this.props.lastPrice = value;
+    this.calculateUnitPrice();
   }
 
   public get lastDate(): Date {
